@@ -7,21 +7,21 @@ print("="*40)
 import os                          # file exist hai ya nahi check karne ke liye
 from datetime import datetime      # date aur time ke liye
  
-# File ke naam ek jagah rakhe (baad me badalna aasan)
+
 DIARY_FILE = "diary.txt"
 VIEWS_FILE = "views.txt"
 LOG_FILE = "log.txt"
 BACKUP_FILE = "diary_backup.bin"
 SEARCH_FILE = "search_results.txt"
  
-# ---------- Setup: views counter file ----------
+
 # r+ mode tabhi chalta hai jab file pehle se ho, isliye pehle check karte hain
 try:
-    with open(VIEWS_FILE, "r+") as f:
+    with open(VIEWS_FILE, "r+") as f:                             
         pass                       # file hai, kuch karna nahi
 except FileNotFoundError:
     with open(VIEWS_FILE, "x") as f:   # x: nayi file banao
-        f.write("12345")                # 4 digit counter
+        f.write("0000")                # 4 digit counter      
  
 # ---------- Main menu loop ----------
 while True:
@@ -37,14 +37,14 @@ while True:
  
     choice = input("Choose (1-8): ")
     time_now = datetime.now().strftime("%Y-%m-%d %H:%M")   # abhi ka time
-    action = "dairy created"                    # log me kya likhna hai (khaali = kuch nahi)
+    action = "dairy created"                    
  
-    # Option 2-6 ke liye diary pehle se honi chahiye
+    
     if choice in ["2", "3", "4", "5", "6"] and not os.path.exists(DIARY_FILE):
         print("Pehle diary banao (option 1).")
         continue                   # menu par wapas
  
-    # ----- 1. Create diary: mode "x" -----
+    
     if choice == "1":
         try:
             with open(DIARY_FILE, "x") as f:       # file hai to error
@@ -55,7 +55,6 @@ while True:
             print("Diary pehle se hai. Overwrite nahi kiya.")
             action = "Create failed (already exists)"
  
-    # ----- 2. Add entry: mode "a+" -----
     elif choice == "2":
         text = input("Aaj kya hua? ")
         with open(DIARY_FILE, "a+") as f:
@@ -66,7 +65,7 @@ while True:
         print("Entry save ho gayi! Total entries:", total_entries)
         action = "Entry added"
  
-    # ----- 3. Read diary: mode "r" + views counter: mode "r+" -----
+    
     elif choice == "3":
         with open(DIARY_FILE, "r") as f:
             for line in f:
@@ -79,7 +78,7 @@ while True:
         print("\nDiary", views, "baar padhi gayi.")
         action = "Diary read"
  
-    # ----- 4. Search word: mode "w+" -----
+    
     elif choice == "4":
         word = input("Kaunsa word dhundhna hai? ").lower()
         found = 0
@@ -89,7 +88,7 @@ while True:
                     if word in line.lower():
                         result_file.write(line)        # match mila to likho
                         found += 1
-            result_file.seek(0)                        # padhne ke liye shuru me
+            result_file.seek(0)                        
             if found > 0:
                 print("\n--- Results ---")
                 print(result_file.read())
@@ -106,7 +105,7 @@ while True:
         print("Backup ban gaya!", len(data), "bytes copy hue.")
         action = "Backup created"
  
-    # ----- 6. Clear diary: mode "w" -----
+
     elif choice == "6":
         sure = input("Pakka saari entries delete karni hain? (yes/no): ")
         if sure.lower() == "yes":
@@ -117,14 +116,14 @@ while True:
         else:
             print("Cancel kar diya.")
  
-    # ----- 7. View log: mode "r" -----
+    
     elif choice == "7":
         try:
             with open(LOG_FILE, "r") as f:
                 print("\n--- Activity Log ---")
                 print(f.read())
         except FileNotFoundError:
-            print("Abhi koi log nahi hai.")
+            print("Abhi koi log nahi hai. Pahle koi activity karo.")
  
     # ----- 8. Exit -----
     elif choice == "8":
@@ -133,7 +132,7 @@ while True:
     else:
         print("Galat choice. 1 se 8 ke beech number daalo.")
  
-    # ---------- Har action ko log me likho: mode "a" ----------
+
     if action != "dairy created":
         with open(LOG_FILE, "a") as f:
             f.write(f"[{time_now}] {action}\n")
